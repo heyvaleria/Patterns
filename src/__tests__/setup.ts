@@ -1,0 +1,8 @@
+// Mock AsyncStorage for all tests
+jest.mock('@react-native-async-storage/async-storage', () =>
+  require('@react-native-async-storage/async-storage/jest/async-storage-mock')
+)
+
+// Mock Supabase for tests
+process.env.EXPO_PUBLIC_SUPABASE_URL = 'https://test.supabase.co'
+process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY = 'test-anon-key'
