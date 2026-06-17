@@ -1,13 +1,7 @@
 import { useEffect } from 'react'
-import {
-  ActivityIndicator,
-  FlatList,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View
-} from 'react-native'
-import { useNavigation } from '@react-navigation/native'
+import { useCallback } from 'react'
+import { ActivityIndicator, FlatList, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { useNavigation, useFocusEffect } from '@react-navigation/native'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
 import { useEntries } from '../hooks/useEntries'
 import { RootStackParamList } from '../navigation/RootNavigator'
@@ -19,7 +13,6 @@ type EntryCardProps = {
   entry: Entry
   onDelete: (id: string) => void
 }
-
 
 function EntryCard({ entry, onDelete }: EntryCardProps) {
   const date = new Date(entry.created_at).toLocaleDateString('en-GB', {
@@ -44,7 +37,20 @@ function EntryCard({ entry, onDelete }: EntryCardProps) {
 
 export function EntryListScreen() {
   const navigation = useNavigation<NavigationProp>()
-  const { state, deleteEntry } = useEntries()
+  const { state, deleteEntry, fetchEntries } = useEntries()
+
+  // when I added a new entry, I could not see it in the list, because of stale data.
+  // So I am adding useFocusEffect
+  // useFocusEffect runs every time the screen comes into focus — including
+  // when you navigate back to it. So after saving an entry and returning,
+  // it automatically refetches.
+  // useCallback is required by useFocusEffect — it memoizes the function
+  // so it doesn't recreate it on every render. The empty [] means it never changes.
+  useFocusEffect(
+    useCallback(() => {
+      fetchEntries()
+    }, [])
+  )
 
   // navigation.setOptions lets you configure the header from inside the screen
   // component. It's like saying "hey navigator, update the header with these settings."

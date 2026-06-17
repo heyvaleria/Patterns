@@ -19,7 +19,7 @@ const mockSupabase = supabase as jest.Mocked<typeof supabase>
 
 describe('authStore', () => {
   beforeEach(() => {
-    // Reset store to initial state before each test
+    jest.clearAllMocks()
     useAuthStore.setState({ state: { status: 'loading' } })
   })
 

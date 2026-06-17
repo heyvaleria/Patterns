@@ -8,6 +8,7 @@ const mockUseAuth = useAuth as jest.MockedFunction<typeof useAuth>
 
 describe('LoginScreen', () => {
   beforeEach(() => {
+    jest.clearAllMocks()
     mockUseAuth.mockReturnValue({
       state: { status: 'unauthenticated' },
       signIn: jest.fn(),
