@@ -23,7 +23,7 @@ describe('CreateEntryScreen', () => {
 
   it('renders the text input', () => {
     const { getByPlaceholderText } = render(<CreateEntryScreen />)
-    expect(getByPlaceholderText('Write your entry...')).toBeTruthy()
+    expect(getByPlaceholderText('Write or speak your entry...')).toBeTruthy()
   })
 
   it('renders the save button', () => {
@@ -41,7 +41,7 @@ describe('CreateEntryScreen', () => {
     const { getByPlaceholderText, getByText } = render(<CreateEntryScreen />)
 
     fireEvent.changeText(
-      getByPlaceholderText('Write your entry...'),
+      getByPlaceholderText('Write or speak your entry...'),
       'My journal entry'
     )
     fireEvent.press(getByText('Save'))
