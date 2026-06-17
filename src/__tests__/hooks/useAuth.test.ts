@@ -1,4 +1,5 @@
 import { useAuthStore } from '../../store/authStore'
+import { supabase } from '../../lib/supabase'
 
 // Always mock Supabase so tests don't make real network calls
 jest.mock('../../lib/supabase', () => ({
@@ -14,8 +15,7 @@ jest.mock('../../lib/supabase', () => ({
   },
 }))
 
-// Get the mocked version so we can control what it returns
-const { supabase } = require('../../lib/supabase')
+const mockSupabase = supabase as jest.Mocked<typeof supabase>
 
 describe('authStore', () => {
   beforeEach(() => {
@@ -24,7 +24,7 @@ describe('authStore', () => {
   })
 
   it('sets unauthenticated when no session exists', async () => {
-    supabase.auth.getSession.mockResolvedValue({
+    ;(mockSupabase.auth.getSession as jest.Mock).mockResolvedValue({
       data: { session: null },
     })
 
@@ -34,7 +34,7 @@ describe('authStore', () => {
   })
 
   it('sets authenticated when session exists', async () => {
-    supabase.auth.getSession.mockResolvedValue({
+    ;(mockSupabase.auth.getSession as jest.Mock).mockResolvedValue({
       data: {
         session: {
           user: { id: 'user-123', email: 'test@example.com' },
@@ -52,7 +52,7 @@ describe('authStore', () => {
   })
 
   it('sets error state when initialization fails', async () => {
-    supabase.auth.getSession.mockRejectedValue(new Error('Network error'))
+    ;(mockSupabase.auth.getSession as jest.Mock).mockRejectedValue(new Error('Network error'))
 
     await useAuthStore.getState().initialize()
 
@@ -63,3 +63,9 @@ describe('authStore', () => {
     }
   })
 })
+
+// About (mockSupabase.auth.getSession as jest.Mock).mockResolvedValue(...)
+// and similar: this is one of those rare legitimate uses of a type cast —
+// you're telling TypeScript "I know this is a mock, trust me" because the mock
+// factory already replaced it with jest.fn(). The types just can't prove it
+// statically.

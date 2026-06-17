@@ -8,25 +8,25 @@ export function useAuth() {
   useEffect(() => {
     initialize()
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      (_event, session) => {
-        if (session?.user) {
-          useAuthStore.setState({
-            state: {
-              status: 'authenticated',
-              user: {
-                id: session.user.id,
-                email: session.user.email!,
-              },
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      if (session?.user) {
+        useAuthStore.setState({
+          state: {
+            status: 'authenticated',
+            user: {
+              id: session.user.id,
+              email: session.user.email!,
             },
-          })
-        } else {
-          useAuthStore.setState({
-            state: { status: 'unauthenticated' },
-          })
-        }
+          },
+        })
+      } else {
+        useAuthStore.setState({
+          state: { status: 'unauthenticated' },
+        })
       }
-    )
+    })
 
     return () => subscription.unsubscribe()
     // ^ this is the cleanup function — runs when the component unmounts

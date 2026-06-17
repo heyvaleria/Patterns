@@ -49,7 +49,7 @@ export function LoginScreen() {
   if (state.status === 'loading') {
     return (
       <View style={styles.container}>
-        <ActivityIndicator testID='loading' />
+        <ActivityIndicator testID="loading" />
       </View>
     )
   }
@@ -58,31 +58,26 @@ export function LoginScreen() {
     <View style={styles.container}>
       <Text style={styles.title}>Patterns</Text>
 
-      {state.status === 'error' && (
-        <Text style={styles.error}>{state.message}</Text>
-      )}
+      {state.status === 'error' && <Text style={styles.error}>{state.message}</Text>}
 
       <TextInput
         style={styles.input}
-        placeholder='Email'
+        placeholder="Email"
         value={email}
         onChangeText={setEmail}
-        autoCapitalize='none'
-        keyboardType='email-address'
+        autoCapitalize="none"
+        keyboardType="email-address"
       />
 
       <TextInput
         style={styles.input}
-        placeholder='Password'
+        placeholder="Password"
         value={password}
         onChangeText={setPassword}
         secureTextEntry
       />
 
-      <TouchableOpacity
-        style={styles.button}
-        onPress={handleSignIn}
-      >
+      <TouchableOpacity style={styles.button} onPress={handleSignIn}>
         <Text style={styles.buttonText}>Sign in</Text>
       </TouchableOpacity>
     </View>
