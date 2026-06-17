@@ -1,11 +1,25 @@
-import { ActivityIndicator, FlatList, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { useEffect } from 'react'
+import {
+  ActivityIndicator,
+  FlatList,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View
+} from 'react-native'
+import { useNavigation } from '@react-navigation/native'
+import { NativeStackNavigationProp } from '@react-navigation/native-stack'
 import { useEntries } from '../hooks/useEntries'
+import { RootStackParamList } from '../navigation/RootNavigator'
 import { Entry } from '../types/database'
+
+type NavigationProp = NativeStackNavigationProp<RootStackParamList, 'EntryList'>
 
 type EntryCardProps = {
   entry: Entry
   onDelete: (id: string) => void
 }
+
 
 function EntryCard({ entry, onDelete }: EntryCardProps) {
   const date = new Date(entry.created_at).toLocaleDateString('en-GB', {
@@ -29,7 +43,37 @@ function EntryCard({ entry, onDelete }: EntryCardProps) {
 }
 
 export function EntryListScreen() {
+  const navigation = useNavigation<NavigationProp>()
   const { state, deleteEntry } = useEntries()
+
+  // navigation.setOptions lets you configure the header from inside the screen
+  // component. It's like saying "hey navigator, update the header with these settings."
+  // We need navigation to be available before we can call setOptions.
+  // By the time useEffect runs, the component has mounted and navigation is ready.
+  // If you tried to call setOptions directly in the render body it would
+  // work most of the time, but it's a side effect — it reaches outside
+  // the component to change something (the header).
+  // React wants side effects in useEffect.
+  // Why not in the RootNavigator?
+  // But then the + button has no access to navigation — it's defined outside
+  // the screen. You can't call navigation.navigate('CreateEntry') from there easily.
+  // By setting it inside the screen via useEffect, the button closes over the
+  // navigation object and can use it directly.
+  useEffect(() => {
+    navigation.setOptions({
+      // headerRight is a function that returns a component, not a component directly
+      // that's what React Navigation expects
+      headerRight: () => (
+        <TouchableOpacity onPress={() => navigation.navigate('CreateEntry')}>
+          <Text style={{ fontSize: 28 }}>+</Text>
+        </TouchableOpacity>
+      ),
+    })
+  }, [navigation])
+  // the [navigation] dependency array
+  // This tells React: "re-run this effect if navigation changes." In practice
+  // navigation never changes, so this runs exactly once when the screen mounts.
+  // But including it is correct and keeps ESLint happy.
 
   if (state.status === 'loading') {
     return (

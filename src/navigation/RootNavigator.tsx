@@ -1,13 +1,15 @@
 import { NavigationContainer } from '@react-navigation/native'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import { useAuthStore } from '../store/authStore'
-import { LoginScreen } from '../screens/LoginScreen'
+import { CreateEntryScreen } from '../screens/CreateEntryScreen'
 import { EntryListScreen } from '../screens/EntryListScreen'
+import { LoginScreen } from '../screens/LoginScreen'
 import { TouchableOpacity, Text } from 'react-native'
 
 export type RootStackParamList = {
   Login: undefined
   EntryList: undefined
+  CreateEntry: undefined
 }
 // undefined = the screen takes no params
 // or it could look like { userId: string } for example
@@ -29,24 +31,27 @@ export function RootNavigator() {
     <NavigationContainer>
       <Stack.Navigator>
         {state.status === 'authenticated' ? (
-          <Stack.Screen
-            name='EntryList'
-            component={EntryListScreen}
-            options={{
-              title: 'Patterns',
-              headerRight: () => (
-                <TouchableOpacity onPress={signOut}>
-                  <Text>Sign out</Text>
-                </TouchableOpacity>
-              ),
-            }}
-          />
+          <>
+            <Stack.Screen
+              name="EntryList"
+              component={EntryListScreen}
+              options={{
+                title: 'Patterns',
+                headerRight: () => (
+                  <TouchableOpacity onPress={signOut}>
+                    <Text>Sign out</Text>
+                  </TouchableOpacity>
+                ),
+              }}
+            />
+            <Stack.Screen
+              name="CreateEntry"
+              component={CreateEntryScreen}
+              options={{ title: 'New entry' }}
+            />
+          </>
         ) : (
-          <Stack.Screen
-            name='Login'
-            component={LoginScreen}
-            options={{ headerShown: false }}
-          />
+          <Stack.Screen name="Login" component={LoginScreen} options={{ headerShown: false }} />
         )}
       </Stack.Navigator>
     </NavigationContainer>

@@ -3,6 +3,13 @@ import { EntryListScreen } from '../../screens/EntryListScreen'
 import { useEntries } from '../../hooks/useEntries'
 import { Entry } from '../../types/database'
 
+jest.mock('@react-navigation/native', () => ({
+  useNavigation: () => ({
+    navigate: jest.fn(),
+    setOptions: jest.fn(),
+  }),
+}))
+
 jest.mock('../../hooks/useEntries')
 
 const mockUseEntries = useEntries as jest.MockedFunction<typeof useEntries>
