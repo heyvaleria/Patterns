@@ -46,6 +46,18 @@ export function EntryListScreen() {
   // it automatically refetches.
   // useCallback is required by useFocusEffect — it memoizes the function
   // so it doesn't recreate it on every render. The empty [] means it never changes.
+
+  // We use useFocusEffect because it runs every time the screen comes into focus
+  // including when we navigate back to it from another screen.
+  // The useCallback wrapper is required by useFocusEffect to prevent an infinite loop
+
+  // While if we used:
+  // useEffect(() => {
+  //     fetchEntries()
+  // }, [])
+  // It would run once, when the component first mounts.
+  // If you navigate away and come back, it does not run again.
+  // The component is still mounted in memory, just not visible.
   useFocusEffect(
     useCallback(() => {
       fetchEntries()

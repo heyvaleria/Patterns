@@ -81,4 +81,24 @@ describe('CreateEntryScreen', () => {
     const { getByText } = render(<CreateEntryScreen />)
     expect(getByText('Failed to save')).toBeTruthy()
   })
+
+  it('toggles language from English to Italian', () => {
+    const { getByText } = render(<CreateEntryScreen />)
+
+    expect(getByText('🇺🇸 EN')).toBeTruthy()
+
+    fireEvent.press(getByText('🇺🇸 EN'))
+
+    expect(getByText('🇮🇹 IT')).toBeTruthy()
+  })
+
+  it('toggles language back from Italian to English', () => {
+    const { getByText } = render(<CreateEntryScreen />)
+
+    fireEvent.press(getByText('🇺🇸 EN'))
+    expect(getByText('🇮🇹 IT')).toBeTruthy()
+
+    fireEvent.press(getByText('🇮🇹 IT'))
+    expect(getByText('🇺🇸 EN')).toBeTruthy()
+  })
 })

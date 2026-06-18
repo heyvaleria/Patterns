@@ -19,6 +19,7 @@ export function CreateEntryScreen() {
   const navigation = useNavigation<NavigationProp>()
   const { state, saveEntry } = useCreateEntry()
   const [content, setContent] = useState<string>('')
+  const [language, setLanguage] = useState<string>('en-US')
   const [transcript, setTranscript] = useState<string | null>(null)
   // array deconstructuring
 
@@ -27,7 +28,7 @@ export function CreateEntryScreen() {
       setContent((prev) => prev ? `${prev} ${text}` : text)
       setTranscript(text)
     },
-    'it-IT'
+    language
   )
 
   const handleSave = async () => {
@@ -65,6 +66,15 @@ export function CreateEntryScreen() {
       />
 
       <View style={styles.actions}>
+        <TouchableOpacity
+          style={styles.languageButton}
+          onPress={() => setLanguage((prev) => prev === 'en-US' ? 'it-IT' : 'en-US')}
+        >
+          <Text style={styles.languageButtonText}>
+            {language === 'en-US' ? '🇺🇸 EN' : '🇮🇹 IT'}
+          </Text>
+        </TouchableOpacity>
+
         <TouchableOpacity
           style={[
             styles.voiceButton,
@@ -143,5 +153,16 @@ const styles = StyleSheet.create({
   error: {
     color: 'red',
     marginBottom: 12,
+  },
+  languageButton: {
+    borderWidth: 1,
+    borderColor: '#000',
+    borderRadius: 8,
+    padding: 16,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  languageButtonText: {
+    fontSize: 14,
   },
 })
